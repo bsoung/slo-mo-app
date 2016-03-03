@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1BA4F1AE207D052E2BEE787B /* libPods-VideoApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F30DA608BD6DFCF43A48A33C /* libPods-VideoApp.a */; };
 		263842611C762260006D3219 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 263842601C762260006D3219 /* MobileCoreServices.framework */; };
 		2638426F1C774492006D3219 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2638426E1C774492006D3219 /* AVFoundation.framework */; };
 		263842741C7744FC006D3219 /* Video+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 263842711C7744FC006D3219 /* Video+CoreDataProperties.m */; };
@@ -58,6 +59,9 @@
 		26E78B631C7F517B00062F2F /* TTMAVCaptureManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TTMAVCaptureManager.h; sourceTree = "<group>"; };
 		26E78B641C7F517B00062F2F /* TTMAVCaptureManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TTMAVCaptureManager.m; sourceTree = "<group>"; };
 		26E78B661C7F518E00062F2F /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
+		8DC11476884B983B882DBB76 /* Pods-VideoApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-VideoApp.debug.xcconfig"; path = "Pods/Target Support Files/Pods-VideoApp/Pods-VideoApp.debug.xcconfig"; sourceTree = "<group>"; };
+		91409F18AB592784EC683747 /* Pods-VideoApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-VideoApp.release.xcconfig"; path = "Pods/Target Support Files/Pods-VideoApp/Pods-VideoApp.release.xcconfig"; sourceTree = "<group>"; };
+		F30DA608BD6DFCF43A48A33C /* libPods-VideoApp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-VideoApp.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -71,12 +75,30 @@
 				2638427A1C7753AC006D3219 /* MediaPlayer.framework in Frameworks */,
 				2638426F1C774492006D3219 /* AVFoundation.framework in Frameworks */,
 				263842611C762260006D3219 /* MobileCoreServices.framework in Frameworks */,
+				1BA4F1AE207D052E2BEE787B /* libPods-VideoApp.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		06065ED6557ACB791ECCFD29 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				8DC11476884B983B882DBB76 /* Pods-VideoApp.debug.xcconfig */,
+				91409F18AB592784EC683747 /* Pods-VideoApp.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		0E7B077FE21844D321834E50 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				F30DA608BD6DFCF43A48A33C /* libPods-VideoApp.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		26D843A51C76145B0009B977 = {
 			isa = PBXGroup;
 			children = (
@@ -92,6 +114,8 @@
 				263842601C762260006D3219 /* MobileCoreServices.framework */,
 				26D843B01C76145B0009B977 /* VideoApp */,
 				26D843AF1C76145B0009B977 /* Products */,
+				06065ED6557ACB791ECCFD29 /* Pods */,
+				0E7B077FE21844D321834E50 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -143,9 +167,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 26D843C81C76145B0009B977 /* Build configuration list for PBXNativeTarget "VideoApp" */;
 			buildPhases = (
+				D72DA6F067B73B012288DE11 /* Check Pods Manifest.lock */,
 				26D843AA1C76145B0009B977 /* Sources */,
 				26D843AB1C76145B0009B977 /* Frameworks */,
 				26D843AC1C76145B0009B977 /* Resources */,
+				42542E65D412B2A4EC261632 /* Embed Pods Frameworks */,
+				45A12B4590A0D589BE08FE50 /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -201,6 +228,54 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		42542E65D412B2A4EC261632 /* Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-VideoApp/Pods-VideoApp-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		45A12B4590A0D589BE08FE50 /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-VideoApp/Pods-VideoApp-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		D72DA6F067B73B012288DE11 /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		26D843AA1C76145B0009B977 /* Sources */ = {
@@ -324,6 +399,7 @@
 		};
 		26D843C91C76145B0009B977 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 8DC11476884B983B882DBB76 /* Pods-VideoApp.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -338,6 +414,7 @@
 		};
 		26D843CA1C76145B0009B977 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 91409F18AB592784EC683747 /* Pods-VideoApp.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";

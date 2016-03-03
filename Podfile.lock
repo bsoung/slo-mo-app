@@ -1,0 +1,10 @@
+PODS:
+  - PBJVideoPlayer (0.3.0)
+
+DEPENDENCIES:
+  - PBJVideoPlayer
+
+SPEC CHECKSUMS:
+  PBJVideoPlayer: 1024ec3e90802459e28fac3d822f03719e100d34
+
+COCOAPODS: 0.39.0
