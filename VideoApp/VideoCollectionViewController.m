@@ -10,8 +10,11 @@
 #import "VideoCollectionViewController.h"
 #import "SlowMotionViewController.h"
 #import "DataAccessObject.h"
+#import <PBJVideoPlayer/PBJVideoPlayer.h>
 
-@interface VideoCollectionViewController ()
+@interface VideoCollectionViewController (){
+    PBJVideoPlayerController *videoPlayerController;
+}
 
 @property (strong, nonatomic) UIImagePickerController* imagePickerController;
 @property (assign, nonatomic) CGSize cellSize;
@@ -35,6 +38,10 @@
     [flowLayout setItemSize:self.cellSize];
     // Do any additional setup after loading the view, typically from a nib.
     
+    // allocate controller
+    videoPlayerController = [[PBJVideoPlayerController alloc] init];
+    videoPlayerController.delegate = self;
+    videoPlayerController.view.frame = self.view.bounds;  
 
 }
 
@@ -163,44 +170,12 @@
 {
  
     
-    //create AVPlayerItem
-    AVPlayerItem *playerItem = [AVPlayerItem playerItemWithURL:url];
+    videoPlayerController.videoPath = [url absoluteString];
     
-    //Subscribe to AVPlayerItem's DidPlayToEndTime notification
-//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playerDidFinishPlaying:) name:AVPlayerItemDidPlayToEndTimeNotification object:playerItem];
-    
-    //pass AVPlayerItem to a new player
-    AVPlayer *player = [[AVPlayer alloc] initWithPlayerItem:playerItem];
-    playerItem.audioTimePitchAlgorithm = AVAudioTimePitchAlgorithmVarispeed;
-    player.rate = 1.0 / 32.0;
-    
-    
-    
-    //create a playerviewcontroller
-    AVPlayerViewController *playerViewController = [[AVPlayerViewController alloc] init];
-    
-    if (playerViewController) {
-        playerViewController.player = player;
-        self.navigationController.navigationBarHidden = YES;
-      
-        [playerViewController.view setFrame:self.view.frame];
-        [player play];
-    }
-    
-   
-    
-    
+    [self addChildViewController:videoPlayerController];
+    [self.view addSubview:videoPlayerController.view];
+    [videoPlayerController didMoveToParentViewController:self];
 
-    
-    //show the view controller
-    
-    
-    //[self addChildViewController:playerViewController];
-    
-    [self presentViewController:playerViewController animated:YES completion:nil];
-    [self.view addSubview:playerViewController.view];
-   
-    
     
 }
 
