@@ -11,6 +11,8 @@
 #import "SlowMotionViewController.h"
 #import "DataAccessObject.h"
 #import <PBJVideoPlayer/PBJVideoPlayer.h>
+#import <AssetsLibrary/AssetsLibrary.h>
+@import Photos;
 
 @interface VideoCollectionViewController (){
     PBJVideoPlayerController *videoPlayerController;
@@ -45,8 +47,8 @@
 
 }
 
-- (void)viewWillAppear:(BOOL)animated
-{
+- (void)viewWillAppear:(BOOL)animated {
+    
     [super viewWillAppear:animated];
     [self fetchVideosFromDatabase];
     self.navigationController.navigationBarHidden = NO;
@@ -58,22 +60,6 @@
     // Dispose of any resources that can be recreated.
 }
 
-
-
-- (IBAction)cameraButtonTouchUpInside:(UIBarButtonItem *)sender {
-    NSLog(@"Button pressed.");
-//    if([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
-//        self.imagePickerController = [[UIImagePickerController alloc] init];
-//        self.imagePickerController.delegate = self;
-//        self.imagePickerController.sourceType = UIImagePickerControllerSourceTypeCamera;
-//        
-//        self.imagePickerController.mediaTypes = [[NSArray alloc] initWithObjects: (NSString *) kUTTypeMovie, nil];
-//        self.imagePickerController.cameraCaptureMode = UIImagePickerControllerCameraCaptureModeVideo;
-//        self.imagePickerController.videoQuality = UIImagePickerControllerQualityTypeHigh;
-//        
-//        [self presentViewController:self.imagePickerController animated:YES completion:nil];
-//    }
-}
 
 -(void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info
 {
@@ -113,10 +99,7 @@
     [picker dismissViewControllerAnimated:YES completion:^{
          [self fetchVideosFromDatabase];
     }];
-    
-    
-    
-    
+        
 }
 
 - (void)fetchVideosFromDatabase
@@ -148,28 +131,68 @@
         NSString* documentsDirectory = [VideoCollectionViewController applicationDocumentsDirectory];
         NSString* filePath = [documentsDirectory stringByAppendingString:video.filePath];
         NSURL *fileUrl = [NSURL fileURLWithPath:filePath];
-        NSLog(@"%@", fileUrl);
+        NSLog(@"Current URL:%@, pay attention to the APP_ID", fileUrl);
+        
         [self startPlaybackForItemWithURL:fileUrl];
     }
-    
-    //[self startPlaybackForItemWithURL:[NSURL URLWithString:video.filePath]];
-   
-    
-    
-//    MPMoviePlayerController *moviePlayer = [[MPMoviePlayerController alloc] initWithContentURL:[NSURL URLWithString:video.filePath]];
-//    [moviePlayer prepareToPlay];
-//    [moviePlayer.view setFrame:self.view.frame];
-//    moviePlayer.movieSourceType = MPMovieSourceTypeFile;
-//    [self.view addSubview:moviePlayer.view];
-//    [moviePlayer play];
-//    self.moviePlayer = moviePlayer;
 
 }
 
--(void)startPlaybackForItemWithURL:(NSURL *)url
-{
- 
+- (float) getFrameRateFromAVPlayer:(AVPlayer *) player{
     
+    float fps = 0.00;
+    
+    if (player.currentItem.asset) {
+        
+        AVAssetTrack *assetTrack = [player.currentItem.tracks[0] assetTrack];
+        
+        if(assetTrack) {
+            
+            fps = [assetTrack nominalFrameRate];
+        }
+        
+    }
+    
+    return fps;
+}
+
+- (float) getPlayRate:(float) fps {
+    
+    float rate = 1.0;
+    NSString *key = @(fps).stringValue;
+    
+    NSDictionary *rates = @{
+                            @"120" : @0.5,
+                            @"60" : @1.0
+                            };
+    
+    if(rates[key]){
+        
+        NSNumber *storedValue = [rates valueForKey:key];
+        rate = [storedValue floatValue];
+    }
+    
+    return rate;
+    
+}
+
+- (void)videoPlayerReady:(PBJVideoPlayerController *)videoPlayer {
+    
+    PBJVideoView *currentView = (PBJVideoView *) videoPlayer.view;
+    
+    AVPlayer *player = currentView.player;
+    float fps = [self getFrameRateFromAVPlayer:player];
+    float rate = [self getPlayRate:fps];
+    
+    player.rate = rate;
+    
+    videoPlayer.videoFillMode = AVLayerVideoGravityResizeAspectFill;
+    [videoPlayer playFromBeginning];
+
+}
+
+-(void)startPlaybackForItemWithURL:(NSURL *)url {
+ 
     videoPlayerController.videoPath = [url absoluteString];
     
     [self addChildViewController:videoPlayerController];

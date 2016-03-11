@@ -45,7 +45,10 @@
     [super viewDidLayoutSubviews];
 
     if(!self.captureManager) {
+        
         self.captureManager = [[TTMAVCaptureManager alloc] initWithPreviewView:self.previewView mode:TTMOutputModeVideoData];
+        [self.captureManager switchFormatWithDesiredFPS:120];
+        
         self.captureManager.delegate = self;
     }
 }
@@ -69,23 +72,36 @@
 
     NSFileManager *fileManager = [NSFileManager defaultManager];
     
-    //Get documents directory
+    // Get documents directory
     NSString *documentsPath = [SlowMotionViewController applicationDocumentsDirectory];
+    
+    // Generate the timestamp and clean the `-` from the filename
     NSDate* dateNow = [NSDate date];
     NSTimeInterval timeInterval = [dateNow timeIntervalSinceReferenceDate];
     NSString* intervalAsString = [NSString stringWithFormat:@"%f", timeInterval];
     intervalAsString = [intervalAsString stringByReplacingOccurrencesOfString:@"." withString:@""];
+    
+    // Filename with timestamp
     NSString *filename = [NSString stringWithFormat:@"/%@.mov", intervalAsString];
+    
+    // URL with the timestamp
     NSString *filePath = [documentsPath stringByAppendingString:filename];
+    
+    // Where you copy the file
     NSURL *fileUrl = [NSURL fileURLWithPath:filePath];
     
     error = nil;
     
+    // Using the original file path to copy the file
     if (![fileManager moveItemAtURL:outputFileURL toURL:fileUrl error:&error]) {
+        
         NSLog(@"Error moving file %@", error);
+        
     } else {
+        
         //getting reference from appDelegate, which is where managed object context is stored
         AppDelegate *appDelegate = [UIApplication sharedApplication].delegate;
+        
         Video *video = (Video *)[NSEntityDescription insertNewObjectForEntityForName:@"Video"
                                                               inManagedObjectContext:[appDelegate managedObjectContext]];
         video.filePath = filename;
@@ -93,24 +109,24 @@
         video.comment = @"Description";
         video.date = dateNow;
         
-        //        NSDictionary *fileAttributes = [fileManager attributesOfItemAtPath:[fileUrl absoluteString] error:&error];
-        //        NSNumber *fileSizeNumber = [fileAttributes objectForKey:NSFileSize];
-        //        long long fileSize = [fileSizeNumber longLongValue];
-        
         UIImage *image = [SlowMotionViewController generateThumbnailIconForVideoFileWith:fileUrl WithSize:self.cellSize];
         video.thumbNail = UIImagePNGRepresentation(image);
         
+        // Save to CoreData
         [appDelegate saveContext];
+        
     }
     
+    // Copyng the videofile to Photos to double check that is slow motion
     ALAssetsLibrary *assetLibrary = [[ALAssetsLibrary alloc] init];
+    
     [assetLibrary writeVideoAtPathToSavedPhotosAlbum:fileUrl
                                      completionBlock:
-     ^(NSURL *assetURL, NSError *error) {}];
-
-
-    
-//    [self saveRecordedFile:outputFileURL];
+                                     ^(NSURL *assetURL, NSError *error) {
+                                     
+                                         
+                                     
+                                     }];
 }
 
 #pragma mark - Timer Handler
@@ -121,6 +137,7 @@
     NSTimeInterval recorded = current - startTime;
     
     self.timeStamp.text = [NSString stringWithFormat:@"%.2f", recorded];
+    
 }
 
 
@@ -170,34 +187,38 @@
 }
 
 - (IBAction)sixtyFPSButtonTouchUpInside:(id)sender {
+    
     dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     dispatch_async(queue, ^{
         [self.captureManager switchFormatWithDesiredFPS:60];
     });
+    
 }
 
 - (IBAction)oneTwentyFPSButtonTouchUpInside:(id)sender {
    
     dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     dispatch_async(queue, ^{
-        [self.captureManager switchFormatWithDesiredFPS:240];
+        [self.captureManager switchFormatWithDesiredFPS:120];
     });
+    
 }
 
 
 - (IBAction)defaultFPSButtonTouchUpInside:(id)sender {
+    
     dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     dispatch_async(queue, ^{
         [self.captureManager switchFormatWithDesiredFPS:30];
     });
+    
 }
 
 
-
-
-+ (UIImage *)generateThumbnailIconForVideoFileWith:(NSURL *)contentURL WithSize:(CGSize)size
-{
++ (UIImage *)generateThumbnailIconForVideoFileWith:(NSURL *)contentURL WithSize:(CGSize)size {
+    
     UIImage *theImage = nil;
+    
     AVURLAsset *asset = [[AVURLAsset alloc] initWithURL:contentURL options:nil];
     AVAssetImageGenerator *generator = [[AVAssetImageGenerator alloc] initWithAsset:asset];
     generator.maximumSize=size;
@@ -207,14 +228,18 @@
     CGImageRef imgRef = [generator copyCGImageAtTime:time actualTime:NULL error:&err];
     theImage = [[UIImage alloc] initWithCGImage:imgRef] ;
     CGImageRelease(imgRef);
+    
     return theImage;
+    
 }
 
-+ (NSString *) applicationDocumentsDirectory
-{
++ (NSString *) applicationDocumentsDirectory {
+    
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     NSString *basePath = paths.firstObject;
+    
     return basePath;
+    
 }
 
 //- (void)SlowMotion:(NSURL *)URl
