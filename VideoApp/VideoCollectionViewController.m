@@ -10,8 +10,13 @@
 #import "VideoCollectionViewController.h"
 #import "SlowMotionViewController.h"
 #import "DataAccessObject.h"
+#import <PBJVideoPlayer/PBJVideoPlayer.h>
+#import <AssetsLibrary/AssetsLibrary.h>
+@import Photos;
 
-@interface VideoCollectionViewController ()
+@interface VideoCollectionViewController (){
+    PBJVideoPlayerController *videoPlayerController;
+}
 
 @property (strong, nonatomic) UIImagePickerController* imagePickerController;
 @property (assign, nonatomic) CGSize cellSize;
@@ -35,11 +40,15 @@
     [flowLayout setItemSize:self.cellSize];
     // Do any additional setup after loading the view, typically from a nib.
     
+    // allocate controller
+    videoPlayerController = [[PBJVideoPlayerController alloc] init];
+    videoPlayerController.delegate = self;
+    videoPlayerController.view.frame = self.view.bounds;  
 
 }
 
-- (void)viewWillAppear:(BOOL)animated
-{
+- (void)viewWillAppear:(BOOL)animated {
+    
     [super viewWillAppear:animated];
     [self fetchVideosFromDatabase];
     self.navigationController.navigationBarHidden = NO;
@@ -51,22 +60,6 @@
     // Dispose of any resources that can be recreated.
 }
 
-
-
-- (IBAction)cameraButtonTouchUpInside:(UIBarButtonItem *)sender {
-    NSLog(@"Button pressed.");
-//    if([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
-//        self.imagePickerController = [[UIImagePickerController alloc] init];
-//        self.imagePickerController.delegate = self;
-//        self.imagePickerController.sourceType = UIImagePickerControllerSourceTypeCamera;
-//        
-//        self.imagePickerController.mediaTypes = [[NSArray alloc] initWithObjects: (NSString *) kUTTypeMovie, nil];
-//        self.imagePickerController.cameraCaptureMode = UIImagePickerControllerCameraCaptureModeVideo;
-//        self.imagePickerController.videoQuality = UIImagePickerControllerQualityTypeHigh;
-//        
-//        [self presentViewController:self.imagePickerController animated:YES completion:nil];
-//    }
-}
 
 -(void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<NSString *,id> *)info
 {
@@ -106,10 +99,7 @@
     [picker dismissViewControllerAnimated:YES completion:^{
          [self fetchVideosFromDatabase];
     }];
-    
-    
-    
-    
+        
 }
 
 - (void)fetchVideosFromDatabase
@@ -141,66 +131,74 @@
         NSString* documentsDirectory = [VideoCollectionViewController applicationDocumentsDirectory];
         NSString* filePath = [documentsDirectory stringByAppendingString:video.filePath];
         NSURL *fileUrl = [NSURL fileURLWithPath:filePath];
-        NSLog(@"%@", fileUrl);
+        NSLog(@"Current URL:%@, pay attention to the APP_ID", fileUrl);
+        
         [self startPlaybackForItemWithURL:fileUrl];
     }
-    
-    //[self startPlaybackForItemWithURL:[NSURL URLWithString:video.filePath]];
-   
-    
-    
-//    MPMoviePlayerController *moviePlayer = [[MPMoviePlayerController alloc] initWithContentURL:[NSURL URLWithString:video.filePath]];
-//    [moviePlayer prepareToPlay];
-//    [moviePlayer.view setFrame:self.view.frame];
-//    moviePlayer.movieSourceType = MPMovieSourceTypeFile;
-//    [self.view addSubview:moviePlayer.view];
-//    [moviePlayer play];
-//    self.moviePlayer = moviePlayer;
 
 }
 
--(void)startPlaybackForItemWithURL:(NSURL *)url
-{
- 
+- (float) getFrameRateFromAVPlayer:(AVPlayer *) player{
     
-    //create AVPlayerItem
-    AVPlayerItem *playerItem = [AVPlayerItem playerItemWithURL:url];
+    float fps = 0.00;
     
-    //Subscribe to AVPlayerItem's DidPlayToEndTime notification
-//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playerDidFinishPlaying:) name:AVPlayerItemDidPlayToEndTimeNotification object:playerItem];
-    
-    //pass AVPlayerItem to a new player
-    AVPlayer *player = [[AVPlayer alloc] initWithPlayerItem:playerItem];
-    playerItem.audioTimePitchAlgorithm = AVAudioTimePitchAlgorithmVarispeed;
-    player.rate = 1.0 / 32.0;
-    
-    
-    
-    //create a playerviewcontroller
-    AVPlayerViewController *playerViewController = [[AVPlayerViewController alloc] init];
-    
-    if (playerViewController) {
-        playerViewController.player = player;
-        self.navigationController.navigationBarHidden = YES;
-      
-        [playerViewController.view setFrame:self.view.frame];
-        [player play];
+    if (player.currentItem.asset) {
+        
+        AVAssetTrack *assetTrack = [player.currentItem.tracks[0] assetTrack];
+        
+        if(assetTrack) {
+            
+            fps = [assetTrack nominalFrameRate];
+        }
+        
     }
     
-   
-    
-    
+    return fps;
+}
 
+- (float) getPlayRate:(float) fps {
     
-    //show the view controller
+    float rate = 1.0;
+    NSString *key = @(fps).stringValue;
     
+    NSDictionary *rates = @{
+                            @"120" : @0.5,
+                            @"60" : @1.0
+                            };
     
-    //[self addChildViewController:playerViewController];
+    if(rates[key]){
+        
+        NSNumber *storedValue = [rates valueForKey:key];
+        rate = [storedValue floatValue];
+    }
     
-    [self presentViewController:playerViewController animated:YES completion:nil];
-    [self.view addSubview:playerViewController.view];
-   
+    return rate;
     
+}
+
+- (void)videoPlayerReady:(PBJVideoPlayerController *)videoPlayer {
+    
+    PBJVideoView *currentView = (PBJVideoView *) videoPlayer.view;
+    
+    AVPlayer *player = currentView.player;
+    float fps = [self getFrameRateFromAVPlayer:player];
+    float rate = [self getPlayRate:fps];
+    
+    player.rate = rate;
+    
+    videoPlayer.videoFillMode = AVLayerVideoGravityResizeAspectFill;
+    [videoPlayer playFromBeginning];
+
+}
+
+-(void)startPlaybackForItemWithURL:(NSURL *)url {
+ 
+    videoPlayerController.videoPath = [url absoluteString];
+    
+    [self addChildViewController:videoPlayerController];
+    [self.view addSubview:videoPlayerController.view];
+    [videoPlayerController didMoveToParentViewController:self];
+
     
 }
 

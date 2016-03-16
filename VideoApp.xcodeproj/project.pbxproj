@@ -32,10 +32,10 @@
 /* Begin PBXFileReference section */
 		263842601C762260006D3219 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		2638426E1C774492006D3219 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
-		263842701C7744FC006D3219 /* Video+CoreDataProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Video+CoreDataProperties.h"; sourceTree = "<group>"; };
-		263842711C7744FC006D3219 /* Video+CoreDataProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Video+CoreDataProperties.m"; sourceTree = "<group>"; };
-		263842721C7744FC006D3219 /* Video.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Video.h; sourceTree = "<group>"; };
-		263842731C7744FC006D3219 /* Video.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Video.m; sourceTree = "<group>"; };
+		263842701C7744FC006D3219 /* Video+CoreDataProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "Video+CoreDataProperties.h"; path = "../Video+CoreDataProperties.h"; sourceTree = "<group>"; };
+		263842711C7744FC006D3219 /* Video+CoreDataProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "Video+CoreDataProperties.m"; path = "../Video+CoreDataProperties.m"; sourceTree = "<group>"; };
+		263842721C7744FC006D3219 /* Video.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Video.h; path = ../Video.h; sourceTree = "<group>"; };
+		263842731C7744FC006D3219 /* Video.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Video.m; path = ../Video.m; sourceTree = "<group>"; };
 		263842761C77498A006D3219 /* VideoViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoViewCell.h; sourceTree = "<group>"; };
 		263842771C77498A006D3219 /* VideoViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoViewCell.m; sourceTree = "<group>"; };
 		263842791C7753AC006D3219 /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
@@ -94,6 +94,12 @@
 		0E7B077FE21844D321834E50 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				26CF862E1C808B8900472C24 /* AssetsLibrary.framework */,
+				26E78B661C7F518E00062F2F /* CoreMedia.framework */,
+				2638427B1C7BB81F006D3219 /* AVKit.framework */,
+				263842791C7753AC006D3219 /* MediaPlayer.framework */,
+				2638426E1C774492006D3219 /* AVFoundation.framework */,
+				263842601C762260006D3219 /* MobileCoreServices.framework */,
 				F30DA608BD6DFCF43A48A33C /* libPods-VideoApp.a */,
 			);
 			name = Frameworks;
@@ -102,16 +108,6 @@
 		26D843A51C76145B0009B977 = {
 			isa = PBXGroup;
 			children = (
-				26CF862E1C808B8900472C24 /* AssetsLibrary.framework */,
-				26E78B661C7F518E00062F2F /* CoreMedia.framework */,
-				2638427B1C7BB81F006D3219 /* AVKit.framework */,
-				263842791C7753AC006D3219 /* MediaPlayer.framework */,
-				263842701C7744FC006D3219 /* Video+CoreDataProperties.h */,
-				263842711C7744FC006D3219 /* Video+CoreDataProperties.m */,
-				263842721C7744FC006D3219 /* Video.h */,
-				263842731C7744FC006D3219 /* Video.m */,
-				2638426E1C774492006D3219 /* AVFoundation.framework */,
-				263842601C762260006D3219 /* MobileCoreServices.framework */,
 				26D843B01C76145B0009B977 /* VideoApp */,
 				26D843AF1C76145B0009B977 /* Products */,
 				06065ED6557ACB791ECCFD29 /* Pods */,
@@ -130,17 +126,15 @@
 		26D843B01C76145B0009B977 /* VideoApp */ = {
 			isa = PBXGroup;
 			children = (
+				590756721C8F142E007F2C39 /* utils */,
+				590756711C8F13F1007F2C39 /* model */,
 				26D843B41C76145B0009B977 /* AppDelegate.h */,
 				26D843B51C76145B0009B977 /* AppDelegate.m */,
-				26E14BA11C808295004F7368 /* DataAccessObject.h */,
-				26E14BA21C808295004F7368 /* DataAccessObject.m */,
 				26D843B71C76145B0009B977 /* VideoCollectionViewController.h */,
 				26D843B81C76145B0009B977 /* VideoCollectionViewController.m */,
 				263842761C77498A006D3219 /* VideoViewCell.h */,
 				263842771C77498A006D3219 /* VideoViewCell.m */,
 				26D843BA1C76145B0009B977 /* Main.storyboard */,
-				26E78B631C7F517B00062F2F /* TTMAVCaptureManager.h */,
-				26E78B641C7F517B00062F2F /* TTMAVCaptureManager.m */,
 				26CDFD841C7F4EFB0031976C /* SlowMotionViewController.h */,
 				26CDFD851C7F4EFB0031976C /* SlowMotionViewController.m */,
 				26D843C01C76145B0009B977 /* Assets.xcassets */,
@@ -158,6 +152,28 @@
 				26D843B21C76145B0009B977 /* main.m */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		590756711C8F13F1007F2C39 /* model */ = {
+			isa = PBXGroup;
+			children = (
+				26E14BA11C808295004F7368 /* DataAccessObject.h */,
+				26E14BA21C808295004F7368 /* DataAccessObject.m */,
+				263842701C7744FC006D3219 /* Video+CoreDataProperties.h */,
+				263842711C7744FC006D3219 /* Video+CoreDataProperties.m */,
+				263842721C7744FC006D3219 /* Video.h */,
+				263842731C7744FC006D3219 /* Video.m */,
+			);
+			name = model;
+			sourceTree = "<group>";
+		};
+		590756721C8F142E007F2C39 /* utils */ = {
+			isa = PBXGroup;
+			children = (
+				26E78B631C7F517B00062F2F /* TTMAVCaptureManager.h */,
+				26E78B641C7F517B00062F2F /* TTMAVCaptureManager.m */,
+			);
+			name = utils;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -194,7 +210,7 @@
 				TargetAttributes = {
 					26D843AD1C76145B0009B977 = {
 						CreatedOnToolsVersion = 7.2;
-						DevelopmentTeam = 5668M8G28J;
+						DevelopmentTeam = D34NY92TC4;
 					};
 				};
 			};

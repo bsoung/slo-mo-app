@@ -25,13 +25,14 @@
 	BOOL recordingWillBeStarted;
     TTMOutputMode currentMode;
 }
+// For video file output
 @property (nonatomic, strong) AVCaptureSession *captureSession;
 @property (nonatomic, strong) AVCaptureMovieFileOutput *movieFileOutput;
 @property (nonatomic, strong) AVCaptureDeviceFormat *defaultFormat;
 @property (nonatomic, strong) NSURL *fileURL;
 @property (nonatomic, strong) AVCaptureVideoPreviewLayer *previewLayer;
 
-// for video data output
+// For video data output
 @property (nonatomic, strong) AVAssetWriter *assetWriter;
 @property (nonatomic, strong) AVAssetWriterInput *assetWriterVideoInput;
 @property (nonatomic, strong) AVAssetWriterInput *assetWriterAudioInput;
@@ -120,7 +121,6 @@
                 [audioDataOutput setSampleBufferDelegate:self queue:audioCaptureQueue];
                 
                 self.audioConnection = [audioDataOutput connectionWithMediaType:AVMediaTypeAudio];
-
 
                 // BufferQueue
                 OSStatus err = CMBufferQueueCreate(kCFAllocatorDefault, 1, CMBufferQueueGetCallbacksForUnsortedSampleBuffers(), &previewBufferQueue);
@@ -389,9 +389,11 @@
         if ([videoDevice lockForConfiguration:nil]) {
             
             NSLog(@"selected format:%@", selectedFormat);
+            
             videoDevice.activeFormat = selectedFormat;
             videoDevice.activeVideoMinFrameDuration = CMTimeMake(1, (int32_t)desiredFPS);
             videoDevice.activeVideoMaxFrameDuration = CMTimeMake(1, (int32_t)desiredFPS);
+            
             [videoDevice unlockForConfiguration];
         }
     }
@@ -414,14 +416,16 @@
         NSString *filePath = nil;
 
         do
-            filePath =[NSString stringWithFormat:@"/%@/%@-%i.mp4", documentsDirectory, dateTimePrefix, fileNamePostfix++];
+            filePath =[NSString stringWithFormat:@"/%@/%@-%i.mov", documentsDirectory, dateTimePrefix, fileNamePostfix++];
         while ([[NSFileManager defaultManager] fileExistsAtPath:filePath]);
         
         self.fileURL = [NSURL URLWithString:[@"file://" stringByAppendingString:filePath]];
-
+        
+        [self.videoConnection setPreferredVideoStabilizationMode:AVCaptureVideoStabilizationModeOff];
+        
         [self.movieFileOutput startRecordingToOutputFileURL:self.fileURL recordingDelegate:self];
-    }
-    else if (currentMode == TTMOutputModeVideoData) {
+        
+    } else if (currentMode == TTMOutputModeVideoData) {
 
         dispatch_async(movieWritingQueue, ^{
 
@@ -435,7 +439,7 @@
             NSString *filePath = nil;
 
             do
-                filePath =[NSString stringWithFormat:@"/%@/%@-%i.MOV", documentsDirectory, dateTimePrefix, fileNamePostfix++];
+                filePath =[NSString stringWithFormat:@"/%@/%@-%i.mov", documentsDirectory, dateTimePrefix, fileNamePostfix++];
             while ([[NSFileManager defaultManager] fileExistsAtPath:filePath]);
             
             self.fileURL = [NSURL fileURLWithPath:filePath];
@@ -459,8 +463,8 @@
     if (currentMode == TTMOutputModeMovieFile) {
         
         [self.movieFileOutput stopRecording];
-    }
-    else if (currentMode == TTMOutputModeVideoData) {
+        
+    } else if (currentMode == TTMOutputModeVideoData) {
         
         dispatch_async(movieWritingQueue, ^{
 

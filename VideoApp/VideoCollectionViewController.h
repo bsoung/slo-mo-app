@@ -14,9 +14,10 @@
 #import "Video+CoreDataProperties.h"
 #import "AppDelegate.h"
 #import "VideoViewCell.h"
+#import <PBJVideoPlayer/PBJVideoPlayer.h>
 
-@interface VideoCollectionViewController : UIViewController <UIImagePickerControllerDelegate, UINavigationControllerDelegate, UICollectionViewDataSource, UICollectionViewDelegate>
-
+@interface VideoCollectionViewController : UIViewController <UIImagePickerControllerDelegate, UINavigationControllerDelegate, UICollectionViewDataSource, UICollectionViewDelegate,
+  PBJVideoPlayerControllerDelegate>
 
 @end
 

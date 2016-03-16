@@ -44,8 +44,8 @@
 
 }
 
-- (NSArray *)fetchVideosFromDatabase
-{
+- (NSArray *)fetchVideosFromDatabase {
+    
     NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:@"Video"];
     NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"title" ascending:YES];
     request.sortDescriptors = @[sortDescriptor];
@@ -54,6 +54,7 @@
     
     NSError *error = nil;
     NSArray *fetchedObjects = [managedObjectContext executeFetchRequest:request error:&error];
+    
     if (error) {
         NSLog(@"Cannot fetch objects %@", error);
     } else {
